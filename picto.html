@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+      #scrolly {
+        position: relative;
+        padding: 1rem;
+      }
+
+      .scrolly-overlay {
+        position: relative;
+        padding: 0;
+        max-width: 35rem;
+        margin: 0 auto;
+      }
+
+      .sticky-thing {
+        position: -webkit-sticky;
+        position: sticky;
+        left: 0;
+        width: 100%;
+        margin: 0;
+        z-index: 0;
+        top: 0;
+        height: 100vh;
+        /* Center everything inside */
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .step {
+        margin: 0 auto 2rem auto;
+        margin-bottom: 25rem;
+        background-color: #eee;
+        background-color: #fff;
+        color: black;
+      }
+
+      .step p {
+        text-align: center;
+        padding: 1rem;
+        font-size: 1.25rem;
+      }
+
+      .hidden { visibility: hidden; }
+
+      /* When it"s less than 700 pixels wide, do normal scrollytelling */
+      @media only screen and (min-width: 700px) {
+        #scrolly.side-by-side {
+          display: flex;
+        }
+
+        #scrolly.side-by-side > div {
+          flex-basis: 0;
+          flex-grow: 1;
+          flex-shrink: 1;
+          padding: 0.75em;
+        }
+
+        #scrolly.side-by-side .scrolly-overlay {
+          margin-top: 70vh;
+          order: 0;
+          /* Change these to adjust sizing options */
+          min-width: 15rem;
+          max-width: 20rem;
+        }
+
+        #scrolly.side-by-side .sticky-thing {
+          order: 1;
+          flex-grow: 2;
+        }
+
+        #grid-chart-one {
+          width: 20px !important;
+
+        }
+
+      }
+    </style>
+	<script src="https://unpkg.com/intersection-observer@0.5.1/intersection-observer.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/scrollama/3.0.4/scrollama.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.3.0/d3.min.js"></script>
+  </head>
+
+  <body>
+    <section class="section">
+        <div class="title has-text-centered">	
+            The largest auto recall in U.S. history 
+        </div>
+        <br>
+        <div class="has-text-centered">
+            Defective airbags made by Takata have been linked to at least 21 deaths and more than 400 injuries in the U.S. As many as 55 million vehicles are affected, according to the NHTSA. 
+
+            Let’s walk through the history of the biggest auto recall in U.S. history — one that’s still ongoing.
+            </div>
+    </section>
+    <section id="scrolly">
+    <div class="sticky-thing">
+        <div id="grid-container-zero">
+            <div id="grid-chart-zero"></div>
+        </div>
+        <div id="grid-container-one">
+            <div id="grid-chart-one"></div>
+        </div>
+        <div id="grid-container-two">
+            <div id="grid-chart-two"></div>
+        </div>
+    </div>
+
+    <div class="scrolly-overlay">
+        <div class="step">
+            <p>In 2009, an eighteen-year-old student bled to death after her 2001 Honda Accord bumped another car in the school parking lot. The airbag exploded with such force that the metal debris sliced open her carotid artery.</p>
+        </div>
+        <div class="step" id="step-zero">
+            <p>At the time, only about 4,000 vehicles had been recalled. This was the first time Honda publicly acknowledged the issue, but failed to disclose that it knew about prior injuries caused by the malfunctioning airbags.</p>          
+        </div>
+        <div class="step" id="step-one">
+            <p>Honda soon expanded that recall to 440,000 cars. Six months after Parham’s death, another airbag ruptured, killing 33-year-old Gurjit Rathore. Both cases were settled privately.</p>
+            <p>The NHTSA opened an inquiry into Honda and Takata, but closed the probe just six months later.</p>
+        </div>
+          <div class="step" id="step-two">
+            <p>More than a decade later, 67 million airbags from at least 42 million vehicles in the U.S. have been recalled.</p>
+        </div>
+        <div class="step" id="step-three">
+            <p>TKTKTK</p>
+        </div>
+      </section>
+
+
+<!-- Scrollytelling code goes under here -->
+    
+    <script>
+    // hide graphic
+      function hideAll() {
+        d3.select("#grid-container-zero").classed("hidden", true)
+        d3.select("#grid-container-one").classed("hidden", true)
+        d3.select("#grid-container-two").classed("hidden", true)
+      }
+      
+      hideAll()
+
+      d3.select("#step-zero").on("stepout", function(e) {
+        if(e.detail.direction === "up") {
+          // undo the changes from step one if scroll back up
+          hideAll()
+        }
+      })
+
+    d3.select("#step-zero").on("stepin", function(e) {
+        d3.select("#step-zero")
+        // do changes for step zero
+        d3.select("#grid-container-zero").classed("hidden", false)
+      })
+
+      d3.select("#step-one").on("stepin", function(e) {
+        d3.select("#step-one")
+        // do changes for step one
+        d3.select("#grid-container-zero").classed("hidden", true)
+        d3.select("#grid-container-one").classed("hidden", false)
+      })
+
+      d3.select("#step-two").on("stepin", function(e) {
+        // do changes for step two
+        hideAll()
+        d3.select("#grid-container-two").classed("hidden", false)
+      })
+
+      d3.select("#step-three").on("stepin", function(e) {
+        // do changes for step two
+        hideAll()
+        d3.select("#grid-container-two").classed("hidden", true)
+      })
+
+    </script>
+
+    <script>
+        function drawGraph0() {
+            // width and height of the SVG
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            const margin = 50;
+
+            //create an svg with width and height
+            var svg = d3.select("#grid-chart-zero")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height)
+
+            //1 row and 4 columns 
+            var numRows = 1;
+            var numCols = 4;
+
+            //x and y axis scales
+            var y = d3.scaleBand()
+                .domain(d3.range(numRows))
+                .range([0,width - margin]);
+
+            var x = d3.scaleBand()
+                .domain(d3.range(numCols))
+                .range([0,height - margin]);
+
+            //the data is just an array of numbers for each cell in the grid
+            var data = d3.range(numCols*numRows);
+
+            //container to hold the grid
+            var container = svg.append("g")
+                .attr("transform", "translate(" + width/2 + "," + height/2 + ")");
+                // .attr("transform", "translate(" + 30 + "," + height/2 + ")");
+
+            container
+                .selectAll("circle")
+                .data(data)
+                .enter()
+                .append("circle")
+                .attr("id", function(d){return "id"+d;})
+                .attr("cx", function(d){return x(d%numCols);})
+                .attr("cy", function(d){return y(Math.floor(d/numCols));})
+                .attr("r", 5)
+        }
+
+        //call function to draw the graph
+        drawGraph0();
+
+    </script>
+
+    <script>
+        function drawGraph1() {
+            // width and height of the SVG
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            const margin = 50;
+
+            //create an svg with width and height
+            var svg = d3.select("#grid-chart-one")
+                .append("svg")
+                .attr("width", width - margin)
+                .attr("height", height - margin)
+
+            //11 rows and 40 columns 
+            var numRows = 11;
+            var numCols = 40;
+
+            //x and y axis scales
+            var y = d3.scaleBand()
+                .domain(d3.range(numRows))
+                .range([0,height - margin]);
+
+            var x = d3.scaleBand()
+                .domain(d3.range(numCols))
+                .range([0, width - margin]);
+
+            //the data is just an array of numbers for each cell in the grid
+            var data = d3.range(numCols*numRows);
+
+            //container to hold the grid
+            // move it
+            var container = svg
+                .append("g")
+                .attr("transform", "translate(50,20)");
+
+            container
+                .selectAll("circle")
+                .data(data)
+                .enter()
+                .append("circle")
+                .attr("id", function(d){return "id"+d;})
+                .attr("cx", function(d){return x(d%numCols);})
+                .transition()
+                .duration(3000)
+                .attr("cy", function(d){return y(Math.floor(d/numCols));})
+                .attr("r", 5)
+
+        }
+
+        //call function to draw the graph
+        drawGraph1();
+
+    </script>
+
+    <script>
+        function drawGraph2() {
+            // width and height of the SVG
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            const margin = 50;
+
+            //create an svg with width and height
+            var svg = d3.select("#grid-chart-two")
+                .append("svg")
+                .attr("width", width - margin)
+                .attr("height", height - margin)
+
+            //1050 rows and 40 columns 
+            var numRows = 40;
+            var numCols = 1050;
+
+            //x and y axis scales
+            var y = d3.scaleBand()
+                .domain(d3.range(numRows))
+                .range([0,height - margin]);
+
+            var x = d3.scaleBand()
+                .domain(d3.range(numCols))
+                .range([0, width - margin]);
+
+            //the data is just an array of numbers for each cell in the grid
+            var data = d3.range(numCols*numRows);
+
+            //container to hold the grid
+            // move it
+            var container = svg.append("g")
+                .attr("transform", "translate(50,20)");
+
+            container.selectAll("circle")
+                .data(data)
+                .enter().append("circle")
+                .attr("id", function(d){return "id"+d;})
+                .attr("cx", function(d){return x(d%numCols);})
+                .transition()
+                .duration(3000)
+                .attr("cy", function(d){return y(Math.floor(d/numCols));})
+                .attr("r", 5)
+
+        }
+
+        //call function to draw the graph
+        drawGraph2();
+
+</script>
+
+<script>
+    const scroller = scrollama();
+
+	scroller
+		.setup({
+			step: "#scrolly .scrolly-overlay .step",
+			offset: 0.5,
+			debug: false
+		})
+		.onStepEnter(function({ element, index, direction}) {
+			const event = new CustomEvent("stepin", { detail: { direction: direction } })
+			element.dispatchEvent(event);
+		})
+		.onStepExit(function({ element, index, direction }) {
+			const event = new CustomEvent("stepout", { detail: { direction: direction } })
+			element.dispatchEvent(event);
+		});
+
+	window.addEventListener("resize", scroller.resize);
+    </script>
+
+
+    <!-- ai2html resizer script -->
+
+<script type="text/javascript">
+  (function() {
+      // only want one resizer on the page
+      if (document.documentElement.className.indexOf("g-resizer-v3-init") > -1) return;
+      document.documentElement.className += " g-resizer-v3-init";
+      // require IE9+
+      if (!("querySelector" in document)) return;
+      function resizer() {
+          var elements = Array.prototype.slice.call(document.querySelectorAll(".g-artboard[data-min-width]")),
+              widthById = {};
+          elements.forEach(function(el) {
+              var parent = el.parentNode,
+                  width = widthById[parent.id] || parent.getBoundingClientRect().width,
+                  minwidth = el.getAttribute("data-min-width"),
+                  maxwidth = el.getAttribute("data-max-width");
+              widthById[parent.id] = width;
+
+              if (+minwidth <= width && (+maxwidth >= width || maxwidth === null)) {
+                  el.style.display = "block";
+              } else {
+                  el.style.display = "none";
+              }
+          });
+          try {
+              if (window.parent && window.parent.$) {
+                  window.parent.$("body").trigger("resizedcontent", [window]);
+              }
+              if (window.require) {
+                  require(["foundation/main"], function() {
+                      require(["shared/interactive/instances/app-communicator"], function(AppCommunicator) {
+                          AppCommunicator.triggerResize();
+                      });
+                  });
+              }
+          } catch(e) { console.log(e); }
+      }
+
+      document.addEventListener("DOMContentLoaded", resizer);
+      // feel free to replace throttle with _.throttle, if available
+      window.addEventListener("resize", throttle(resizer, 200));        
+
+      function throttle(func, wait) {
+          // from underscore.js
+          var _now = Date.now || function() { return new Date().getTime(); },
+              context, args, result, timeout = null, previous = 0;
+          var later = function() {
+              previous = _now();
+              timeout = null;
+              result = func.apply(context, args);
+              if (!timeout) context = args = null;
+          };
+          return function() {
+              var now = _now(), remaining = wait - (now - previous);
+              context = this;
+              args = arguments;
+              if (remaining <= 0 || remaining > wait) {
+                  if (timeout) {
+                      clearTimeout(timeout);
+                      timeout = null;
+                  }
+                  previous = now;
+                  result = func.apply(context, args);
+                  if (!timeout) context = args = null;
+              } else if (!timeout && options.trailing !== false) {
+                  timeout = setTimeout(later, remaining);
+              }
+              return result;
+          };
+      }
+
+     
+  })();
+</script>
+
+  </body>
+</html>
