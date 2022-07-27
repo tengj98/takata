@@ -45,6 +45,7 @@ function drawChart1() {
         .attr("r", 5)
 }
 
+
 function drawChart2() {
     // width and height of the SVG
     const width = window.innerWidth;
@@ -124,7 +125,9 @@ function drawChart3() {
     //container to hold the grid
     // move it
     var container = svg.append("g")
-        .attr("transform", "translate(50,20)");
+        // .attr("transform", "translate(50,20)");
+        .attr('transform', `translate(${margin} ${margin})`)
+
 
     container.selectAll("circle")
         .data(data)
@@ -138,8 +141,9 @@ function drawChart3() {
 }
 
 
+
 // create our scrollama instance and call it scroller
-const scroll = scrollama();
+const scroller = scrollama();
 
 // this function shows the element passed to it by setting opacity to 1 or another value we specify
 function show(selector, opacity = 1) {
@@ -161,11 +165,11 @@ function hide(selector) {
 // offset is where on the page each step gets triggered
 // 0.5 is the middle of the page
 // debug gives us guides on the page that help us while we are working on this
-scroll.setup({
+scroller.setup({
     step: ".step",
     offset: 0.75,
     debug: false
-})
+    })
     // the function that fires every time a new step activates
     .onStepEnter((response) => {
         // this log helps us keep track of where we are while we are building the scrolly
@@ -180,21 +184,28 @@ scroll.setup({
             hide("#grid-container-three")
 
         } else if (response.index === 1) {
-            drawChart1()
             show("#grid-container-one")
+            drawChart1()
             hide("#grid-container-two")
             hide("#grid-container-three")
 
         } else if (response.index === 2) {
-            drawChart2()
             hide("#grid-container-one")
             show("#grid-container-two")
+            drawChart2()
             hide("#grid-container-three")
 
         } else if (response.index === 3) {
-            drawChart3()
             hide("#grid-container-one")
             hide("#grid-container-two")
             show("#grid-container-three")
+            drawChart3()
         } 
-    });
+
+        //resize
+        window.addEventListener("resize", scroller.resize);
+
+    })
+
+
+
